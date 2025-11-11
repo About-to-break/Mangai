@@ -1,29 +1,25 @@
 import os
 import datetime
-from pathlib import Path
 from PIL import Image
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from config import *
+from processing import get_all_imgs
 
 # ───────────────────────────────
 # Константы и пути
 # ───────────────────────────────
-SCRIPT_DIR = Path(__file__).resolve().parent
-DEFAULT_FOLDER = SCRIPT_DIR.parent / "dataset" / "downloads"
-PLOTS_DIR = SCRIPT_DIR.parent / "dataset" / "plots"
-STATS_DIR = SCRIPT_DIR.parent / "dataset" / "stats"
 
 PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 STATS_DIR.mkdir(parents=True, exist_ok=True)
-
 
 # ───────────────────────────────
 # Класс статистики
 # ───────────────────────────────
 class RawDatasetStatistics:
-    def __init__(self, folder: Path = DEFAULT_FOLDER):
+    def __init__(self, folder: Path = DOWNLOADS_DIR):
         self.folder = Path(folder)
         if not self.folder.exists():
             raise FileNotFoundError(f"❌ Dataset folder not found: {self.folder}")
@@ -31,30 +27,20 @@ class RawDatasetStatistics:
 
     def count_images(self) -> int:
         """Рекурсивно считает количество изображений в каталоге"""
-        valid_ext = (".png", ".jpg", ".jpeg", ".tif", ".tiff", ".webp")
         total = sum(
             1 for root, _, files in os.walk(self.folder)
-            for f in files if f.lower().endswith(valid_ext)
+            for f in files if f.lower().endswith(VALID_IMG_EXT)
         )
         return total
 
     def stat_resolutions(self, target_folder: Path = None, do_plot: bool = False) -> pd.DataFrame:
         """Собирает статистику по всем изображениям (включая подпапки)"""
         target_folder = Path(target_folder or self.folder)
-        valid_ext = (".png", ".jpg", ".jpeg", ".tif", ".tiff", ".webp")
 
-        all_files = []
-        for root, _, files in os.walk(target_folder):
-            for f in files:
-                if f.lower().endswith(valid_ext):
-                    rel_path = os.path.relpath(os.path.join(root, f), target_folder)
-                    all_files.append(rel_path)
-
-        if not all_files:
-            raise ValueError(f"❌ No images found in: {target_folder}")
+        all_files = get_all_imgs(target_folder)
 
         stats = []
-        for rel_path in tqdm(all_files, desc="📸 Scanning images"):
+        for rel_path in tqdm(all_files, desc="📸 Scanning images\n"):
             abs_path = target_folder / rel_path
             try:
                 with Image.open(abs_path) as img:
@@ -66,7 +52,7 @@ class RawDatasetStatistics:
                         "aspect_ratio": round(w / h, 4)
                     })
             except Exception as e:
-                print(f"\n⚠️ Error reading {abs_path}: {e}")
+                print(f"\n⚠️ Error reading {abs_path}: {e}\n")
 
         df = pd.DataFrame(stats)
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -112,3 +98,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
