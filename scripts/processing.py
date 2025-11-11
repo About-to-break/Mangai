@@ -4,6 +4,7 @@ from tqdm import tqdm
 from typing import List
 from pathlib import Path
 from PIL import Image
+import random
 from config import *
 
 # ───────────────────────────────
@@ -112,15 +113,37 @@ def standardise_resolutions(
 
     print(f"\n✅ Normalised {len(all_files)} images saved to {target_folder}")
 
-class Color_corrector:
+
+"""Перемешивает файлы и перемещает в новую директорию"""
+def shuffle_png_files(source_folder: Path, target_folder: Path):
+    target_folder.mkdir(parents=True, exist_ok=True)
+
+    all_files = [p for p in source_folder.glob("*.png")]
+    random.shuffle(all_files)
+
+    for i, img_path in enumerate(tqdm(all_files, desc="\n🥳 Everyday i'm shuffling...\n")):
+        new_name = f"page_{i:04d}{img_path.suffix}"
+        shutil.copy2(img_path, target_folder / new_name)
+
+    print(f"\n✅ Shuffled {len(all_files)} files and saved to {target_folder}")
+
+
+
+
+class ColorCorrector:
     def __init__(self):
         pass
     # Пока не ясно, понадобится ли
+
+class IcdarConverter:
+    def __init__(self):
+        pass
 
 # ───────────────────────────────
 # Точка входа
 # ───────────────────────────────
 def main():
+    """
     # transfer_images_with_subfolders(DOWNLOADS_DIR, RAW_IMG_DIR)
 
     # convert_images_to_png(RAW_IMG_DIR)
@@ -130,6 +153,12 @@ def main():
         target_folder=Path(RAW_IMG_DIR.parent) / "resized",
         target_width=1280,
         max_height=1800
+    )
+    """
+
+    shuffle_png_files(
+        source_folder=Path(RAW_IMG_DIR.parent) / "resized",
+        target_folder=Path(RAW_IMG_DIR.parent) / "labels"
     )
 
 
