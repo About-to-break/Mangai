@@ -2,7 +2,6 @@ import os
 import shutil
 from tqdm import tqdm
 from typing import List
-from pathlib import Path
 from PIL import Image
 import random
 from config import *
@@ -126,9 +125,6 @@ def shuffle_png_files(source_folder: Path, target_folder: Path):
         shutil.copy2(img_path, target_folder / new_name)
 
     print(f"\n✅ Shuffled {len(all_files)} files and saved to {target_folder}")
-
-
-
 
 class ColorCorrector:
     def __init__(self):
