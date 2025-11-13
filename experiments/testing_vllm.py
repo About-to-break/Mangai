@@ -64,7 +64,7 @@ messages = [
 ]
 
 response = client.chat.completions.create(
-    model="PaddlePaddle/PaddleOCR-VL",
+    model="jzhang533/PaddleOCR-VL-For-Manga",
     messages=messages,
     temperature=0.1,
 )

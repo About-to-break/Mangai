@@ -42,7 +42,7 @@ def main(target_folder: Path, sample_count: int = 10, seed: int = None):
         print(f"\nSending {rel_path} to vLLM...\n")
         try:
             response = client.chat.completions.create(
-                model="PaddlePaddle/PaddleOCR-VL",
+                model="jzhang533/PaddleOCR-VL-For-Manga",
                 messages=generate_message(rel_path),
                 temperature=0.0,
             )

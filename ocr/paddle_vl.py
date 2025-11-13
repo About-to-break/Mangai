@@ -1,6 +1,6 @@
 from paddleocr import PaddleOCRVL
 
-class MangaVLAnalyzer:
+class PaddleVLAnalyzer:
     def __init__(self, config: dict = None):
         self.config = config or {}
         self._init_model()
@@ -14,5 +14,6 @@ class MangaVLAnalyzer:
 
     def predict(self, image_path):
         return self.ocr_vl.predict(image_path)
+
 
 

@@ -1,4 +1,4 @@
-from ocr.paddle_vl import MangaVLAnalyzer
+from ocr.paddle_vl import PaddleVLAnalyzer
 import random
 from tqdm import tqdm
 
@@ -18,7 +18,7 @@ paddle_vl_config = {
     "use_layout_detection": True,
 
 }
-ocr_unit = MangaVLAnalyzer(config=paddle_vl_config)
+ocr_unit = PaddleVLAnalyzer(config=paddle_vl_config)
 
 """Проверка PAddleOCR-VL-for-manga + его родного layout detection"""
 def main(target_folder: Path, sample_count: int = 10, seed: int = None):
