@@ -210,3 +210,4 @@ __marimo__/
 .idea/
 dataset/*
 models/
+experiments/test.png

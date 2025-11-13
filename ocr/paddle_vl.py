@@ -14,3 +14,5 @@ class MangaVLAnalyzer:
 
     def predict(self, image_path):
         return self.ocr_vl.predict(image_path)
+
+

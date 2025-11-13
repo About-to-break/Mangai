@@ -1,3 +1,4 @@
+import base64
 import os
 import shutil
 from tqdm import tqdm
@@ -125,6 +126,18 @@ def shuffle_png_files(source_folder: Path, target_folder: Path):
         shutil.copy2(img_path, target_folder / new_name)
 
     print(f"\n✅ Shuffled {len(all_files)} files and saved to {target_folder}")
+
+"""Сконвертировать картинку в b64 строку"""
+def convert_png_to_b64(img_path: Path) -> str:
+    try:
+        with open(img_path, "rb") as f:
+            b64_img_str = base64.b64encode(f.read()).decode("utf-8")
+
+            return b64_img_str
+    except Exception as e:
+        print(f"⚠️ Error processing {img_path}: {e}")
+
+        return ""
 
 class ColorCorrector:
     def __init__(self):

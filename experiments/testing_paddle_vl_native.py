@@ -1,4 +1,4 @@
-from ocr.vl import MangaVLAnalyzer
+from ocr.paddle_vl import MangaVLAnalyzer
 import random
 from tqdm import tqdm
 
@@ -6,20 +6,19 @@ from config import *
 from scripts.processing import get_all_imgs
 
 paddle_vl_config = {
-    "vl_rec_model_dir": MODELS_DIR / "PaddleOCR-VL-For-Manga",
-    "use_layout_detection": True,
     "layout_threshold": 0.35,
     "layout_unclip_ratio": 1.5,
     "layout_nms": 0.2,
     "layout_merge_bboxes_mode": "union",
-    "use_doc_orientation_classify": False,
-    "use_doc_unwarping": False,
-    "vl_rec_backend": "native",
-    "vl_rec_max_concurrency": 1
+
+    "vl_rec_backend": "vllm-server",
+    "vl_rec_max_concurrency": 1,
+    "vl_rec_server_url": "http://dev-01.local:8000/v1",
+    "vl_rec_model_name":"PaddlePaddle/PaddleOCR-VL",
+    "use_layout_detection": True,
 
 }
-
-ocr_vl = MangaVLAnalyzer(config=paddle_vl_config)
+ocr_unit = MangaVLAnalyzer(config=paddle_vl_config)
 
 """Проверка PAddleOCR-VL-for-manga + его родного layout detection"""
 def main(target_folder: Path, sample_count: int = 10, seed: int = None):
@@ -31,7 +30,8 @@ def main(target_folder: Path, sample_count: int = 10, seed: int = None):
 
     for rel_path in tqdm(samples, desc=f"OCRing {sample_count} random samples\n"):
         try:
-            ocr_vl_result = ocr_vl.predict(rel_path)
+            ocr_vl_result = ocr_unit.predict(rel_path)
+
             print(f"\n✅ Done: {rel_path}\n:{ocr_vl_result}\n")
 
         except Exception as e:
@@ -43,7 +43,6 @@ main(
     seed=123,
 )
 
-# TODO: поменять под использование vLLM
 
 
 
